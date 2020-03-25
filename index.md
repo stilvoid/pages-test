@@ -1,8 +1,3 @@
----
-title: About me
-permalink: /
----
-
 ![Picture of Steve Engledow]({{ "/assets/images/me-badge-small.jpg" | absolute_url }})
 
 [OS](https://www.archlinux.org/)

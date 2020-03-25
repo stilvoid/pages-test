@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=baa4c96d4d612f8e2696f0979938d54ccf973283">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Git aux | engledow.me</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Git aux" />
+<meta name="author" content="Steve Engledow" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="For a while now, I’ve been wanting to keep various parts of my home directory in sync." />
+<meta property="og:description" content="For a while now, I’ve been wanting to keep various parts of my home directory in sync." />
+<link rel="canonical" href="http://localhost:4000/2013/02/11/hbtm/" />
+<meta property="og:url" content="http://localhost:4000/2013/02/11/hbtm/" />
+<meta property="og:site_name" content="engledow.me" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2013-02-11T00:00:00+00:00" />
+<script type="application/ld+json">
+{"description":"For a while now, I’ve been wanting to keep various parts of my home directory in sync.","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2013/02/11/hbtm/"},"@type":"BlogPosting","url":"http://localhost:4000/2013/02/11/hbtm/","headline":"Git aux","dateModified":"2013-02-11T00:00:00+00:00","datePublished":"2013-02-11T00:00:00+00:00","author":{"@type":"Person","name":"Steve Engledow"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+    <header>
+      <div class="container">
+        <h1><a href="/">engledow.me</a></h1>
+        <p><a href="https://www.linkedin.com/in/stilvoid/">Steve Engledow: Senior Solutions Builder</a> at <a href="https://aws.amazon.com/">Amazon Web Services</a></p>
+        <p><small>
+            Latest post: <a href="/2019/02/12/using-git-with-aws/">Using Git with AWS CodeCommit Across Multiple AWS Accounts</a>
+            &mdash;
+            
+            Latest project: <a href="https://github.com/stilvoid/git-cube">git-cube</small></a>
+        </p>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <small>11 February 2013</small>
+
+<h1>Git aux</h1>
+
+
+<small>tags: <em>git</em>, <em>coding</em></small>
+
+
+<p>For a while now, I’ve been wanting to keep various parts of my home directory in sync.</p>
+
+<p>At first, I created a git repository for storing my <a href="https://en.wikipedia.org/wiki/Dotfile#Unix_and_Unix-like_environments">dotfiles</a> but I found it a pain to keep the repository up-to-date.</p>
+
+<p>Fairly recently, someone pointed out <a href="http://git-annex.branchable.com/">git-annex</a> to me. After a good read of the documentation, it sounded like it could be useful but probably more than I needed and perhaps not quite what I really wanted. Besides, I couldn’t get the bloody thing to install.</p>
+
+<p>So I did what any geek would do, I wrote my own :D</p>
+
+<p>See <a href="https://github.com/stilvoid/git-aux">git-aux</a> (or <a href="https://aur.archlinux.org/packages/git-aux-git/">AUR</a> if you’re on <a href="https://www.archlinux.org/">Arch Linux</a>).</p>
+
+<p>Basically, I wanted an easy to way to keep a git repository in sync with an directory external to it. With git aux installed, I get pretty much exactly what I wanted with a few simple commands.</p>
+
+<p>After creating a new git repository, I do <code class="highlighter-rouge">git aux init ~/</code> to tell git-aux that I want it to sync this repo with my home directory.</p>
+
+<p>I then do <code class="highlighter-rouge">git aux add ~/.vimrc ~/.ssh/config ~/.bashrc</code> and any other files I want from my home directory. This copies those files into the repository and I can then commit them in the usual way.</p>
+
+<p>If I make changes in my home directory, I use <code class="highlighter-rouge">git aux sync</code> to update the copies in the repository.</p>
+
+<p>If I’ve made changes on another machine and want to apply those changes from the repo to the home dir on this machine, I do <code class="highlighter-rouge">git aux apply</code>.</p>
+
+<p>And that’s it :)</p>
+
+<p>It’s unfinished and probably broken in places but mostly does what I was looking for.</p>
+
+
+      </section>
+    </div>
+
+    <footer>
+      <nav class="container">
+        <a href="#top">Back to the top</a>
+        |
+        <a href="/">Main page</a>
+        |
+        <a href="/feed.xml">RSS feed</a>
+      </nav>
+
+      <div class="container">
+          <p>All content &copy; 2011-2018 <a href="https://www.linkedin.com/in/stilvoid/">Steve Engledow</a>.</p>
+        <p>All views expressed here are mine and don't reflect those of Amazon.</p>
+        <p>The <a href="https://github.com/stilvoid/stilvoid.github.io">contents of this web site</a> are available under the terms of the <a href="https://github.com/stilvoid/stilvoid.github.io/blob/master/LICENSE">MIT license</a>.</p>
+      </div>
+    </footer>
+
+    
+  </body>
+</html>

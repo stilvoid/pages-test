@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=baa4c96d4d612f8e2696f0979938d54ccf973283">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Using Git with AWS CodeCommit Across Multiple AWS Accounts | engledow.me</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Using Git with AWS CodeCommit Across Multiple AWS Accounts" />
+<meta name="author" content="Steve Engledow" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="(Cross-posted from the AWS DevOps blog)" />
+<meta property="og:description" content="(Cross-posted from the AWS DevOps blog)" />
+<link rel="canonical" href="http://localhost:4000/2019/02/12/using-git-with-aws/" />
+<meta property="og:url" content="http://localhost:4000/2019/02/12/using-git-with-aws/" />
+<meta property="og:site_name" content="engledow.me" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-02-12T00:00:00+00:00" />
+<script type="application/ld+json">
+{"description":"(Cross-posted from the AWS DevOps blog)","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2019/02/12/using-git-with-aws/"},"@type":"BlogPosting","url":"http://localhost:4000/2019/02/12/using-git-with-aws/","headline":"Using Git with AWS CodeCommit Across Multiple AWS Accounts","dateModified":"2019-02-12T00:00:00+00:00","datePublished":"2019-02-12T00:00:00+00:00","author":{"@type":"Person","name":"Steve Engledow"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+    <header>
+      <div class="container">
+        <h1><a href="/">engledow.me</a></h1>
+        <p><a href="https://www.linkedin.com/in/stilvoid/">Steve Engledow: Senior Solutions Builder</a> at <a href="https://aws.amazon.com/">Amazon Web Services</a></p>
+        <p><small>
+            Latest post: <a href="/2019/02/12/using-git-with-aws/">Using Git with AWS CodeCommit Across Multiple AWS Accounts</a>
+            &mdash;
+            
+            Latest project: <a href="https://github.com/stilvoid/git-cube">git-cube</small></a>
+        </p>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <small>12 February 2019</small>
+
+<h1>Using Git with AWS CodeCommit Across Multiple AWS Accounts</h1>
+
+
+<small>tags: <em>git</em>, <em>aws</em></small>
+
+
+<p>(Cross-posted from <a href="https://aws.amazon.com/blogs/devops/">the AWS DevOps blog</a>)</p>
+
+<p>I use <a href="https://aws.amazon.com/codecommit/">AWS CodeCommit</a> to host all of my private Git repositories. My repositories are split across several AWS accounts for different purposes: personal projects, internal projects at work, and customer projects.</p>
+
+<p>The <a href="https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up.html">CodeCommit documentation</a> shows you how to configure and clone a repository from one place, but in this blog post I want to share how I manage my Git configuration across multiple AWS accounts.</p>
+
+<h2 id="background">Background</h2>
+
+<p>First, I have <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-multiple-profiles.html">profiles</a> configured for each of my AWS environments. I connect to some of them using <a href="https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys">IAM user credentials</a> and others by using <a href="https://aws.amazon.com/blogs/security/how-to-use-a-single-iam-user-to-easily-access-all-your-accounts-by-using-the-aws-cli/">cross-account roles</a>.</p>
+
+<p>I intentionally do not have any credentials associated with the default profile. That way I must always be sure I have selected a profile before I run any AWS CLI commands.</p>
+
+<p>Here’s an anonymized copy of my <code class="highlighter-rouge">~/.aws/config</code> file:</p>
+
+<div class="language-config highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[<span class="n">profile</span> <span class="n">personal</span>]
+<span class="n">region</span> = <span class="n">eu</span>-<span class="n">west</span>-<span class="m">1</span>
+<span class="n">aws_access_key_id</span> = <span class="n">ABCDEFGHIJKLMNOPQRST</span>
+<span class="n">aws_secret_access_key</span> = <span class="n">uvwxyz0123456789abcdefghijklmnopqrstuvwx</span>
+
+[<span class="n">profile</span> <span class="n">work</span>]
+<span class="n">region</span> = <span class="n">us</span>-<span class="n">east</span>-<span class="m">1</span>
+<span class="n">aws_access_key_id</span> = <span class="n">ABCDEFGHIJKLMNOPQRST</span>
+<span class="n">aws_secret_access_key</span> = <span class="n">uvwxyz0123456789abcdefghijklmnopqrstuvwx</span>
+
+[<span class="n">profile</span> <span class="n">customer</span>]
+<span class="n">region</span> = <span class="n">eu</span>-<span class="n">west</span>-<span class="m">2</span>
+<span class="n">source_profile</span> = <span class="n">work</span>
+<span class="n">role_arn</span> = <span class="n">arn</span>:<span class="n">aws</span>:<span class="n">iam</span>::<span class="m">123456789012</span>:<span class="n">role</span>/<span class="n">CrossAccountPowerUser</span>
+</code></pre></div></div>
+
+<p>If I am doing some work in one of those accounts, I run <code class="highlighter-rouge">export AWS_PROFILE=work</code> and use the AWS CLI as normal.</p>
+
+<h2 id="the-problem">The problem</h2>
+
+<p>I use the <a href="https://docs.aws.amazon.com/codecommit/latest/userguide/setting-up-https-unixes.html">Git credential helper</a> so that the Git client works seamlessly with CodeCommit. However, because I use different profiles for different repositories, my use case is a little more complex than the average.</p>
+
+<p>In general, to use the credential helper, all you need to do is place the following options into your <code class="highlighter-rouge">~/.gitconfig</code> file, like this:</p>
+
+<div class="language-config highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[<span class="n">credential</span>]
+    <span class="n">helper</span> = !<span class="n">aws</span> <span class="n">codecommit</span> <span class="n">credential</span>-<span class="n">helper</span> $@
+    <span class="n">UserHttpPath</span> = <span class="n">true</span>
+</code></pre></div></div>
+
+<p>I could make this work across accounts by setting the appropriate value for <code class="highlighter-rouge">AWS_PROFILE</code> before I use Git in a repository, but there is a much neater way to deal with this situation using a feature released in <a href="https://blog.github.com/2017-05-10-git-2-13-has-been-released/">Git version 2.13</a>, <a href="https://git-scm.com/docs/git-config#_includes">conditional includes</a>.</p>
+
+<h2 id="a-solution">A solution</h2>
+
+<p>First, I separate my work into different folders. My <code class="highlighter-rouge">~/code/</code> directory looks like this:</p>
+
+<div class="language-console highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="go">code
+    personal
+        repo1
+        repo2
+    work
+        repo3
+        repo4
+    customer
+        repo5
+        repo6
+</span></code></pre></div></div>
+
+<p>Using this layout, each folder that is directly underneath the code folder has different requirements in terms of configuration for use with CodeCommit.</p>
+
+<p>Solving this has two parts; first, I create a <code class="highlighter-rouge">.gitconfig</code> file in each of the three folder locations. The <code class="highlighter-rouge">.gitconfig</code> files contain any customization (specifically, configuration for the credential helper) that I want in place while I work on projects in those folders.</p>
+
+<p>For example:</p>
+
+<div class="language-config highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[<span class="n">user</span>]
+    <span class="c"># Use a custom email address
+</span>    <span class="n">email</span> = <span class="n">sengledo</span>@<span class="n">amazon</span>.<span class="n">co</span>.<span class="n">uk</span>
+
+[<span class="n">credential</span>]
+    <span class="c"># Note the use of the --profile switch
+</span>    <span class="n">helper</span> = !<span class="n">aws</span> --<span class="n">profile</span> <span class="n">work</span> <span class="n">codecommit</span> <span class="n">credential</span>-<span class="n">helper</span> $@
+    <span class="n">UseHttpPath</span> = <span class="n">true</span>
+</code></pre></div></div>
+
+<p>I also make sure to specify the AWS CLI profile to use in the <code class="highlighter-rouge">.gitconfig</code> file which means that, when I am working in the folder, I don’t need to set <code class="highlighter-rouge">AWS_PROFILE</code> before I run <code class="highlighter-rouge">git push</code>, etc.</p>
+
+<p>Secondly, to make use of these folder-level .gitconfig files, I need to reference them in my global Git configuration at <code class="highlighter-rouge">~/.gitconfig</code></p>
+
+<p>This is done through the <code class="highlighter-rouge">includeIf</code> section. For example:</p>
+
+<div class="language-config highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[<span class="n">includeIf</span> <span class="s2">"gitdir:~/code/personal/"</span>]
+    <span class="n">path</span> = ~/<span class="n">code</span>/<span class="n">personal</span>/.<span class="n">gitconfig</span>
+</code></pre></div></div>
+
+<p>This example specifies that if I am working with a Git repository that is located anywhere under <code class="highlighter-rouge">~/code/personal/</code>, Git should load additional configuration from <code class="highlighter-rouge">~/code/personal/.gitconfig</code>. That additional file specifies the appropriate credential helper invocation with the corresponding AWS CLI profile selected as detailed earlier.</p>
+
+<p>The contents of the new file are treated as if they are inserted into the main <code class="highlighter-rouge">.gitconfig</code> file at the location of the <code class="highlighter-rouge">includeIf</code> section.  This means that the included configuration will only override any configuration specified <em>earlier</em> in the config.</p>
+
+
+      </section>
+    </div>
+
+    <footer>
+      <nav class="container">
+        <a href="#top">Back to the top</a>
+        |
+        <a href="/">Main page</a>
+        |
+        <a href="/feed.xml">RSS feed</a>
+      </nav>
+
+      <div class="container">
+          <p>All content &copy; 2011-2018 <a href="https://www.linkedin.com/in/stilvoid/">Steve Engledow</a>.</p>
+        <p>All views expressed here are mine and don't reflect those of Amazon.</p>
+        <p>The <a href="https://github.com/stilvoid/stilvoid.github.io">contents of this web site</a> are available under the terms of the <a href="https://github.com/stilvoid/stilvoid.github.io/blob/master/LICENSE">MIT license</a>.</p>
+      </div>
+    </footer>
+
+    
+  </body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=baa4c96d4d612f8e2696f0979938d54ccf973283">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>An evening of linux on the desktop | engledow.me</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="An evening of linux on the desktop" />
+<meta name="author" content="Steve Engledow" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Last time, I wrote about trying a few desktop environments to see what’s out there, keep things fresh, and keep me from complacency. Well, as with desktop environments, so with text editors. I decided briefly that I would try a few of the more recent code editors that are around these days. Lured in by their pleasing, modern visuals and their promises of a smooth, integrated experience, I’ve been meaning to give these a go for a while. Needless to say, as a long-time vim user, I just found myself frustrated that I wasn’t able to get things done as efficiently in any of those editors as I could in vim ;) I tried installing vim keybindings in Atom but it just wasn’t the same as a very limited set of functionality was there. As for the integrated environment, when you have tmux running by default, everything’s integrated anyway." />
+<meta property="og:description" content="Last time, I wrote about trying a few desktop environments to see what’s out there, keep things fresh, and keep me from complacency. Well, as with desktop environments, so with text editors. I decided briefly that I would try a few of the more recent code editors that are around these days. Lured in by their pleasing, modern visuals and their promises of a smooth, integrated experience, I’ve been meaning to give these a go for a while. Needless to say, as a long-time vim user, I just found myself frustrated that I wasn’t able to get things done as efficiently in any of those editors as I could in vim ;) I tried installing vim keybindings in Atom but it just wasn’t the same as a very limited set of functionality was there. As for the integrated environment, when you have tmux running by default, everything’s integrated anyway." />
+<link rel="canonical" href="http://localhost:4000/2017/07/10/an-evening-of-linux-on-the-desktop/" />
+<meta property="og:url" content="http://localhost:4000/2017/07/10/an-evening-of-linux-on-the-desktop/" />
+<meta property="og:site_name" content="engledow.me" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-07-10T00:00:00+01:00" />
+<script type="application/ld+json">
+{"description":"Last time, I wrote about trying a few desktop environments to see what’s out there, keep things fresh, and keep me from complacency. Well, as with desktop environments, so with text editors. I decided briefly that I would try a few of the more recent code editors that are around these days. Lured in by their pleasing, modern visuals and their promises of a smooth, integrated experience, I’ve been meaning to give these a go for a while. Needless to say, as a long-time vim user, I just found myself frustrated that I wasn’t able to get things done as efficiently in any of those editors as I could in vim ;) I tried installing vim keybindings in Atom but it just wasn’t the same as a very limited set of functionality was there. As for the integrated environment, when you have tmux running by default, everything’s integrated anyway.","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2017/07/10/an-evening-of-linux-on-the-desktop/"},"@type":"BlogPosting","url":"http://localhost:4000/2017/07/10/an-evening-of-linux-on-the-desktop/","headline":"An evening of linux on the desktop","dateModified":"2017-07-10T00:00:00+01:00","datePublished":"2017-07-10T00:00:00+01:00","author":{"@type":"Person","name":"Steve Engledow"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+    <header>
+      <div class="container">
+        <h1><a href="/">engledow.me</a></h1>
+        <p><a href="https://www.linkedin.com/in/stilvoid/">Steve Engledow: Senior Solutions Builder</a> at <a href="https://aws.amazon.com/">Amazon Web Services</a></p>
+        <p><small>
+            Latest post: <a href="/2019/02/12/using-git-with-aws/">Using Git with AWS CodeCommit Across Multiple AWS Accounts</a>
+            &mdash;
+            
+            Latest project: <a href="https://github.com/stilvoid/git-cube">git-cube</small></a>
+        </p>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <small>10 July 2017</small>
+
+<h1>An evening of linux on the desktop</h1>
+
+
+<small>tags: <em>linux</em>, <em>desktop</em>, <em>editors</em></small>
+
+
+<p><a href="https://engledow.me/blog/88/">Last time</a>, I wrote about trying a few desktop environments to see what’s out there, keep things fresh, and keep me from complacency. Well, as with desktop environments, so with text editors. I decided briefly that I would try <a href="https://atom.io/">a few of</a> <a href="https://www.sublimetext.com/">the more recent</a> <a href="https://code.visualstudio.com/">code editors</a> that are around these days. Lured in by their pleasing, modern visuals and their promises of a smooth, integrated experience, I’ve been meaning to give these a go for a while. Needless to say, as a long-time <a href="https://www.vim.org/">vim</a> user, I just found myself frustrated that I wasn’t able to get things done as efficiently in any of those editors as I could in vim ;) I tried installing vim keybindings in Atom but it just wasn’t the same as a very limited set of functionality was there. As for the integrated environment, when you have <a href="https://engledow.me/blog/46">tmux running by default</a>, everything’s integrated anyway.</p>
+
+<p>And, as with editors, so once again with desktop environments. I’ve decided to retract my previous hasty promise and no longer to bother with trying any other environments; <a href="https://i3wm.org/">i3</a> is more than fine :)</p>
+
+<p>However, I did spend some time this evening making things a bit prettier so here are some delicious configs for posterity:</p>
+
+<h2 id="configs">Configs</h2>
+
+<h3 id="xresources">Xresources</h3>
+
+<p>I’ve switched back to xterm from urxvt because, er… dunno.</p>
+
+<p>Anyway, I set some nice colours for terminals and some magic stuff that makes man pages all colourful :)</p>
+
+<figure class="highlight"><pre><code class="language-config" data-lang="config"><span class="n">XTerm</span>*<span class="n">faceName</span>: <span class="n">xft</span>:<span class="n">Hack</span>:<span class="n">regular</span>:<span class="n">size</span>=<span class="m">12</span>
+*<span class="n">termName</span>: <span class="n">xterm</span>-<span class="m">256</span><span class="n">color</span>
+
+! <span class="n">Colourful</span> <span class="n">man</span> <span class="n">pages</span>
+*<span class="n">VT100</span>.<span class="n">colorBDMode</span>:     <span class="n">true</span>
+*<span class="n">VT100</span>.<span class="n">colorBD</span>:         <span class="n">cyan</span>
+*<span class="n">VT100</span>.<span class="n">colorULMode</span>:     <span class="n">true</span>
+*<span class="n">VT100</span>.<span class="n">colorUL</span>:         <span class="n">darkcyan</span>
+*<span class="n">VT100</span>.<span class="n">colorITMode</span>:     <span class="n">true</span>
+*<span class="n">VT100</span>.<span class="n">colorIT</span>:         <span class="n">yellow</span>
+*<span class="n">VT100</span>.<span class="n">veryBoldColors</span>:  <span class="m">518</span>
+
+! <span class="n">terminal</span> <span class="n">colours</span>
+*<span class="n">foreground</span>:<span class="c">#CCCCCC
+</span>*<span class="n">background</span>:<span class="c">#2B2D2E
+</span>
+!<span class="n">black</span> <span class="n">darkgray</span>
+*<span class="n">color0</span>:    <span class="c">#2B2D2E
+</span>*<span class="n">color8</span>:    <span class="c">#808080
+</span>!<span class="n">darkred</span> <span class="n">red</span>
+*<span class="n">color1</span>:    <span class="c">#FF0044
+</span>*<span class="n">color9</span>:    <span class="c">#F92672
+</span>!<span class="n">darkgreen</span> <span class="n">green</span>
+*<span class="n">color2</span>:    <span class="c">#82B414
+</span>*<span class="n">color10</span>:   <span class="c">#A6E22E
+</span>!<span class="n">darkyellow</span> <span class="n">yellow</span>
+*<span class="n">color3</span>:    <span class="c">#FD971F
+</span>*<span class="n">color11</span>:   <span class="c">#E6DB74
+</span>!<span class="n">darkblue</span> <span class="n">blue</span>
+*<span class="n">color4</span>:    <span class="c">#266C98
+</span>*<span class="n">color12</span>:   <span class="c">#7070F0
+</span>!<span class="n">darkmagenta</span> <span class="n">magenta</span>
+*<span class="n">color5</span>:    <span class="c">#AC0CB1
+</span>*<span class="n">color13</span>:   <span class="c">#D63AE1
+</span>!<span class="n">darkcyan</span> <span class="n">cyan</span>
+*<span class="n">color6</span>:    <span class="c">#AE81FF
+</span>*<span class="n">color14</span>:   <span class="c">#66D9EF
+</span>!<span class="n">gray</span> <span class="n">white</span>
+*<span class="n">color7</span>:    <span class="c">#CCCCCC
+</span>*<span class="n">color15</span>:   <span class="err">#</span><span class="n">F8F8F2</span></code></pre></figure>
+
+<h3 id="vimrc">Vimrc</h3>
+
+<p>Nothing exciting here except for discovering a few options I hadn’t previous known about:</p>
+
+<figure class="highlight"><pre><code class="language-vim" data-lang="vim"><span class="c">" Show a marker at the 80th column to encourage nice code</span>
+<span class="k">set</span> colorcolumn<span class="p">=</span><span class="m">80</span>
+highlight ColorColumn ctermbg<span class="p">=</span>darkblue
+
+<span class="c">" Scroll the text when we're 3 lines from the top or bottom</span>
+<span class="k">set</span> <span class="k">so</span><span class="p">=</span><span class="m">3</span>
+
+<span class="c">" Use browser-style incremental search</span>
+<span class="k">set</span> incsearch
+
+<span class="c">" Override the default background colour in xoria256 to match the terminal background</span>
+highlight Normal ctermbg<span class="p">=</span>black
+
+<span class="c">" I like this theme</span>
+<span class="k">colorscheme</span> xoria256</code></pre></figure>
+
+<h3 id="i3">i3</h3>
+
+<p>I made a few colour tweaks to my i3 config so I get colours that match my new Xresources. One day, I might see if it’s easy enough to have them both read colour definitions from the same place so I don’t have to define things twice.</p>
+
+<h2 id="the-result">The result</h2>
+
+<p>Here’s what it looks like:</p>
+
+<p><a href="https://static.offend.me.uk/media/images/blog/89/01.jpg"><img src="https://static.offend.me.uk/media/images/blog/89/01-small.jpg" alt="My new desktop" /></a></p>
+
+
+      </section>
+    </div>
+
+    <footer>
+      <nav class="container">
+        <a href="#top">Back to the top</a>
+        |
+        <a href="/">Main page</a>
+        |
+        <a href="/feed.xml">RSS feed</a>
+      </nav>
+
+      <div class="container">
+          <p>All content &copy; 2011-2018 <a href="https://www.linkedin.com/in/stilvoid/">Steve Engledow</a>.</p>
+        <p>All views expressed here are mine and don't reflect those of Amazon.</p>
+        <p>The <a href="https://github.com/stilvoid/stilvoid.github.io">contents of this web site</a> are available under the terms of the <a href="https://github.com/stilvoid/stilvoid.github.io/blob/master/LICENSE">MIT license</a>.</p>
+      </div>
+    </footer>
+
+    
+  </body>
+</html>

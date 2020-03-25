@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=baa4c96d4d612f8e2696f0979938d54ccf973283">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Ire | engledow.me</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Ire" />
+<meta name="author" content="Steve Engledow" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Call me crazy (thanks) but I like regular expressions." />
+<meta property="og:description" content="Call me crazy (thanks) but I like regular expressions." />
+<link rel="canonical" href="http://localhost:4000/2012/07/07/ire/" />
+<meta property="og:url" content="http://localhost:4000/2012/07/07/ire/" />
+<meta property="og:site_name" content="engledow.me" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2012-07-07T00:00:00+01:00" />
+<script type="application/ld+json">
+{"description":"Call me crazy (thanks) but I like regular expressions.","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2012/07/07/ire/"},"@type":"BlogPosting","url":"http://localhost:4000/2012/07/07/ire/","headline":"Ire","dateModified":"2012-07-07T00:00:00+01:00","datePublished":"2012-07-07T00:00:00+01:00","author":{"@type":"Person","name":"Steve Engledow"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+    <header>
+      <div class="container">
+        <h1><a href="/">engledow.me</a></h1>
+        <p><a href="https://www.linkedin.com/in/stilvoid/">Steve Engledow: Senior Solutions Builder</a> at <a href="https://aws.amazon.com/">Amazon Web Services</a></p>
+        <p><small>
+            Latest post: <a href="/2019/02/12/using-git-with-aws/">Using Git with AWS CodeCommit Across Multiple AWS Accounts</a>
+            &mdash;
+            
+            Latest project: <a href="https://github.com/stilvoid/git-cube">git-cube</small></a>
+        </p>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <small>7 July 2012</small>
+
+<h1>Ire</h1>
+
+
+<small>tags: <em>code</em></small>
+
+
+<p>Call me crazy (thanks) but I like regular expressions.</p>
+
+<p>I like them enough to have decided that what I really needed was a tool that let me put regular expressions in my regular expressions (<a href="http://knowyourmeme.com/memes/xzibit-yo-dawg">yo dawg</a>). I had the idea for this a while ago but only got around to realising it a few days ago.</p>
+
+<p>The basic idea is a scripting language for matching text via regular expressions, and then applying further regular expressions (and replacements) dependent on those.</p>
+
+<p>I wanted to keep the syntax fairly free so there’s support for representing blocks by indentation or within braces. To avoiding ambiguity, indenting can’t be used inside braces although the opposite is fine.</p>
+
+<p>Within braces, expressions should be separated by semi-colons.</p>
+
+<p>I also wanted support for creating named blocks of code (functions if you like) and for flexibility over the character used to delimit the parts of an expression.</p>
+
+<h2 id="example">Example</h2>
+
+<p>After some mucking about, what I’ve ended up with is summat that looks like this:</p>
+
+<figure class="highlight"><pre><code class="language-console" data-lang="console"><span class="gp">&gt;</span>proc
+<span class="gp">    /^(.+)\s+@/Model: $</span>1<span class="se">\n</span>/pt
+<span class="gp">    /@\s+(.+)\n$</span>/Speed: <span class="nv">$2</span><span class="se">\n</span>/pt
+<span class="go">
+</span><span class="gp">/^processor\s+:\s+(\d+)/#</span> CPU <span class="nv">$1</span><span class="se">\n</span>/p
+<span class="go">
+/^model name\s+:\s+//
+</span><span class="gp">    &lt;proc&gt;</span>
+<span class="go">    //\n/p</span></code></pre></figure>
+
+<p>The idea being that you pipe <code class="highlighter-rouge">/proc/cpuinfo</code> through that and you get a summary that looks like:</p>
+
+<figure class="highlight"><pre><code class="language-console" data-lang="console"><span class="gp">#</span> CPU 0
+<span class="go">Model: Intel(R) Core(TM) i5-2467M CPU
+Speed: 1.60GHz
+
+</span><span class="gp">#</span> CPU 1
+<span class="go">Model: Intel(R) Core(TM) i5-2467M CPU
+Speed: 1.60GHz
+
+</span><span class="gp">#</span> CPU 2
+<span class="go">Model: Intel(R) Core(TM) i5-2467M CPU
+Speed: 1.60GHz
+
+</span><span class="gp">#</span> CPU 3
+<span class="go">Model: Intel(R) Core(TM) i5-2467M CPU
+Speed: 1.60GHz</span></code></pre></figure>
+
+<h2 id="breaking-it-down">Breaking it down</h2>
+
+<figure class="highlight"><pre><code class="language-console" data-lang="console"><span class="gp">&gt;</span>proc
+<span class="gp">    /^(.+)\s+@/Model: $</span>1<span class="se">\n</span>/pt
+<span class="gp">    /@\s+(.+)\n$</span>/Speed: <span class="nv">$1</span><span class="se">\n</span>/pt</code></pre></figure>
+
+<p>Define a block called <code class="highlighter-rouge">proc</code> and do not execute it yet.</p>
+
+<p>The first line of <code class="highlighter-rouge">proc</code> matches a string followed by a space and an @ symbol. It then replaces what it’s found with Model: (the string at the beginning). Then it prints the result (the <code class="highlighter-rouge">p</code> flag) and discards the replacement that has taken place (temporary apply - the <code class="highlighter-rouge">t</code> flag).</p>
+
+<p>The second line does similar but looks for the @ followed by a space, a string, and a newline then prints “Speed: (the string)”.</p>
+
+<figure class="highlight"><pre><code class="language-console" data-lang="console"><span class="gp">/^processor\s+:\s+(\d+)/#</span> CPU <span class="nv">$1</span><span class="se">\n</span>/p</code></pre></figure>
+
+<p>Match a line starting with processor and print out “CPU (the number)”</p>
+
+<figure class="highlight"><pre><code class="language-console" data-lang="console"><span class="go">/^model name\s+:\s+//
+</span><span class="gp">    &lt;proc&gt;</span>
+<span class="go">    //\n/p</span></code></pre></figure>
+
+<p>Match a line starting with Model name, and remove everything up until the start of the data. Then call the block called <code class="highlighter-rouge">proc</code>. Finally, print a newline character.</p>
+
+<p>Obviously this is a fairly contrived example ;)</p>
+
+<h2 id="trying-it-out">Trying it out</h2>
+
+<p>Like most things these days, I wrote the engine for Ire in <a href="https://nodejs.org/en">node.js</a>.</p>
+
+<p>If you have that installed, you can install ire with:</p>
+
+<figure class="highlight"><pre><code class="language-shell" data-lang="shell">npm install <span class="nt">-g</span> ire</code></pre></figure>
+
+<p>or if you’re feeling less brave or more paranoid, just <code class="highlighter-rouge">npm install ire</code> to install it to the current folder.</p>
+
+<p>Further details are in the README and <a href="https://engledow.me/code/unloved/ire/">on this page</a>.</p>
+
+<h2 id="final-word">Final word</h2>
+
+<p>Yes, I am fully aware that this is somewhat limited in use and probably completely pointless.</p>
+
+<p>I’m sure <em>someone</em> will point out that I could do the kinds of things I want with pure sed or awk or somesuch. To those people: “you’re missing the point”. See my <a href="https://engledow.me/misc/geekcode/">geekcode</a> for details :P</p>
+
+
+      </section>
+    </div>
+
+    <footer>
+      <nav class="container">
+        <a href="#top">Back to the top</a>
+        |
+        <a href="/">Main page</a>
+        |
+        <a href="/feed.xml">RSS feed</a>
+      </nav>
+
+      <div class="container">
+          <p>All content &copy; 2011-2018 <a href="https://www.linkedin.com/in/stilvoid/">Steve Engledow</a>.</p>
+        <p>All views expressed here are mine and don't reflect those of Amazon.</p>
+        <p>The <a href="https://github.com/stilvoid/stilvoid.github.io">contents of this web site</a> are available under the terms of the <a href="https://github.com/stilvoid/stilvoid.github.io/blob/master/LICENSE">MIT license</a>.</p>
+      </div>
+    </footer>
+
+    
+  </body>
+</html>

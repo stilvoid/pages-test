@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=baa4c96d4d612f8e2696f0979938d54ccf973283">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Sorted | engledow.me</title>
+<meta name="generator" content="Jekyll v3.7.4" />
+<meta property="og:title" content="Sorted" />
+<meta name="author" content="Steve Engledow" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I decided to restructure the folder I keep code in (~/code, natch) - taking my cue from how Go does it - so that the folder structure represents where code has come from." />
+<meta property="og:description" content="I decided to restructure the folder I keep code in (~/code, natch) - taking my cue from how Go does it - so that the folder structure represents where code has come from." />
+<link rel="canonical" href="http://localhost:4000/2015/11/30/sorted/" />
+<meta property="og:url" content="http://localhost:4000/2015/11/30/sorted/" />
+<meta property="og:site_name" content="engledow.me" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2015-11-30T00:00:00+00:00" />
+<script type="application/ld+json">
+{"description":"I decided to restructure the folder I keep code in (~/code, natch) - taking my cue from how Go does it - so that the folder structure represents where code has come from.","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2015/11/30/sorted/"},"@type":"BlogPosting","url":"http://localhost:4000/2015/11/30/sorted/","headline":"Sorted","dateModified":"2015-11-30T00:00:00+00:00","datePublished":"2015-11-30T00:00:00+00:00","author":{"@type":"Person","name":"Steve Engledow"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+    <header>
+      <div class="container">
+        <h1><a href="/">engledow.me</a></h1>
+        <p><a href="https://www.linkedin.com/in/stilvoid/">Steve Engledow: Senior Solutions Builder</a> at <a href="https://aws.amazon.com/">Amazon Web Services</a></p>
+        <p><small>
+            Latest post: <a href="/2019/02/12/using-git-with-aws/">Using Git with AWS CodeCommit Across Multiple AWS Accounts</a>
+            &mdash;
+            
+            Latest project: <a href="https://github.com/stilvoid/git-cube">git-cube</small></a>
+        </p>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <small>30 November 2015</small>
+
+<h1>Sorted</h1>
+
+
+<small>tags: <em></em></small>
+
+
+<p>I decided to restructure the folder I keep code in (<code class="highlighter-rouge">~/code</code>, natch) - taking my cue from <a href="https://golang.org/doc/code.html">how Go does it</a> - so that the folder structure represents where code has come from.</p>
+
+<p>As with all things, moving a couple of hundred folders by hand seemed far too daunting so I wrote a bash script to do it.</p>
+
+<p>This script enters each subdirectory within the current directory and, if it has a git remote, moves it to a folder that represents the git remote’s path.</p>
+
+<p>For example, if I had a folder called <code class="highlighter-rouge">scripts</code> that had a git remote of <code class="highlighter-rouge">git@github.com/stilvoid/utils.git</code>, this script will move the folder to <code class="highlighter-rouge">github.com/stilvoid/utils</code>.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/bash</span>
+
+<span class="c"># Target directory for renamed folders</span>
+<span class="nv">BASE</span><span class="o">=</span>/home/steve/code/sorted
+
+<span class="k">for </span>i <span class="k">in</span> <span class="k">$(</span>find ./ <span class="nt">-maxdepth</span> 1 <span class="nt">-mindepth</span> 1 <span class="nt">-type</span> d<span class="k">)</span><span class="p">;</span> <span class="k">do
+    </span><span class="nb">cd</span> <span class="s2">"</span><span class="nv">$i</span><span class="s2">"</span>
+    <span class="nv">folder</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>git remote <span class="nt">-v</span> 2&gt;/dev/null | head <span class="nt">-n</span> 1 | awk <span class="s1">'{print $2}'</span> | sed <span class="nt">-e</span> <span class="s1">'s/^.*:\/\///'</span> | sed <span class="nt">-e</span> <span class="s1">'s/:/\//'</span> | sed <span class="nt">-e</span> <span class="s1">'s/^.*@//'</span> | sed <span class="nt">-e</span> <span class="s1">'s/\.git$//'</span><span class="k">)</span><span class="s2">"</span>
+    <span class="nb">cd</span> ..
+
+    <span class="k">if</span> <span class="o">[</span> <span class="nt">-n</span> <span class="s2">"</span><span class="nv">$folder</span><span class="s2">"</span> <span class="o">]</span><span class="p">;</span> <span class="k">then
+        </span>mkdir <span class="nt">-p</span> <span class="s2">"</span><span class="nv">$BASE</span><span class="s2">/</span><span class="k">$(</span>dirname <span class="nv">$folder</span><span class="k">)</span><span class="s2">"</span>
+        mv <span class="s2">"</span><span class="nv">$i</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$BASE</span><span class="s2">/</span><span class="nv">$folder</span><span class="s2">"</span>
+    <span class="k">fi
+done</span></code></pre></figure>
+
+<p>Yes it’s horrid but it did today’s job ;)</p>
+
+
+      </section>
+    </div>
+
+    <footer>
+      <nav class="container">
+        <a href="#top">Back to the top</a>
+        |
+        <a href="/">Main page</a>
+        |
+        <a href="/feed.xml">RSS feed</a>
+      </nav>
+
+      <div class="container">
+          <p>All content &copy; 2011-2018 <a href="https://www.linkedin.com/in/stilvoid/">Steve Engledow</a>.</p>
+        <p>All views expressed here are mine and don't reflect those of Amazon.</p>
+        <p>The <a href="https://github.com/stilvoid/stilvoid.github.io">contents of this web site</a> are available under the terms of the <a href="https://github.com/stilvoid/stilvoid.github.io/blob/master/LICENSE">MIT license</a>.</p>
+      </div>
+    </footer>
+
+    
+  </body>
+</html>
